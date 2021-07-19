@@ -1,0 +1,30 @@
+version: '3'
+services:
+  prometheus:
+    image: sajselva/my-prometheus
+    container_name: monitoring_prometheus
+    restart: unless-stopped
+    expose:
+      - 9090
+    ports:
+      - 9090:9090
+
+  data_collector:
+    image: sajselva/data-collector
+    container_name: data-collector
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    # options to pass to the data collector
+    command: ["10.195.78.254","router","-p 8765","-g g3"]
+  
+  grafana:
+    image: sajselva/my-grafana
+    container_name: monitoring_grafana
+    restart: unless-stopped
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+
