@@ -12,6 +12,7 @@ services:
   data_collector:
     image: sajselva/data-collector
     container_name: data-collector
+    restart: unless-stopped
     expose:
       - 8000
     ports:

@@ -57,7 +57,10 @@ class cli_command:
             parse_val = []
             val = []
             for key,value in self.parse_dict.items():
-                parse_val.append(re.search(value, data).group(1))
+                res = re.search(value,data)
+                if res is None:
+                    return
+                parse_val.append(res.group(1))
 
             if self.is_cumlative:
                 if not self.last_store:
@@ -223,6 +226,43 @@ mem = {
         'Buffer': ".*used,[\s]+([0-9]+)\.[0-9].*buff.*", 
 }
 
+ngap = {
+        'PathSwitchReq_rcvd':".*PathSwitchRequest received: ([0-9]+)",
+        'PathSwitchReqAck_sent':".*PathSwitchRequestAcknowledge sent: ([0-9]+)",
+        'PathSwitchReqFail_sent':".*PathSwitchRequestFailure sent: ([0-9]+)",
+        'HdvrReqd_rvcd':".*HandoverRequired received: ([0-9]+)",
+        'HdvrCmd_sent':".*HandoverCommand sent: ([0-9]+)",
+        'HdvrPrepFail_sent':".*HandoverPreparationFailure sent: ([0-9]+)",
+        'HdvrReq_sent':".*HandoverRequest sent: ([0-9]+)",
+        'HdvrReqAck_rcvd':".*HandoverRequestAcknowledge received: ([0-9]+)",
+        'HdvrFail_rcvd':".*HandoverFailure received: ([0-9]+)",
+        'HdvrCncl_rcvd':".*HandoverCancel received: ([0-9]+)",
+        'HdvrCnclAck_sent':".*HandoverCancelAcknowledge sent: ([0-9]+)",
+        'HdvrNotif_rcvd':".*HandoverNotify received: ([0-9]+)",
+}
+
+gtpu = {
+        'Num_GTPU_peers':".*GTPU Peer count: ([0-9]+)",
+        'Num_pdu_sess':".*PDU Session Count: ([0-9]+)",
+        'Path_Failure':".*Path Failure: ([0-9]+)",
+        'Echo_Req_sent':".*Echo Request Sent: ([0-9]+)",
+        'Echo_Resp_rcvd':".*Echo Response Received: ([0-9]+)",
+        'Echo_Req_rcvd':".*Echo Request Received: ([0-9]+)",
+        'Echo_Resp_sent':".*Echo Response Sent: ([0-9]+)",
+        'Err_Ind_rcvd':".*Error Indication Received: ([0-9]+)",
+        'Err_Ind_sent':".*Error Indication Sent: ([0-9]+)",
+        'End_marker_sent':".*End Marker Sent: ([0-9]+)",
+}
+
+exmem = {
+        'PDU_Sess':"[\s]+[0-9]+[\s]+[0-9]+[\s]+([0-9]+)[\s]+PDU_SESS",
+        'PDU_Sess_output_blk':"[\s]+[0-9]+[\s]+[0-9]+[\s]+([0-9]+)[\s]+PDU_SESS OUTPUT SUBBLOCK",
+        'PDU_Sess_input_blk':"[\s]+[0-9]+[\s]+[0-9]+[\s]+([0-9]+)[\s]+PDU_SESS INPUT SUBBLOCK",
+        'PDU_Sess_teid_hash':"[\s]+[0-9]+[\s]+[0-9]+[\s]+([0-9]+)[\s]+PDU_SESS TEID HASH TBL",
+        'PDU_Sess_class_hash':"[\s]+[0-9]+[\s]+[0-9]+[\s]+([0-9]+)[\s]+PDU_SESS CLASS HASH TBL",
+        'PCGW_Sbs_clnt':"[\s]+[0-9]+[\s]+[0-9]+[\s]+([0-9]+)[\s]+cpp pcgw sbs client",
+}
+
 t = open_telnet_conn_cli(args.testbed, 10)
 
 cmds=[]
@@ -238,6 +278,15 @@ cmds.append(cli_command(t, cpu, "CPU_stats",
 
 cmds.append(cli_command(t, mem, "Memory_stats", 
                         "show platform software process slot chassis active R0 monitor | in Mem")) 
+
+cmds.append(cli_command(t, ngap, "Handover_stats", 
+                        "sh packet-core stats gnb ngap summary | i Path|Handover")) 
+
+cmds.append(cli_command(t, gtpu, "GTPU_stats", 
+                        "show packet-core stats gtpu-peer global")) 
+
+cmds.append(cli_command(t, exmem, "CPP_exmem_stats", 
+                        "show platform hardware ch ac qfp infrastructure exmem statistics user | i PDU_SESS|pcgw")) 
 
 start_http_server(8000)
 
