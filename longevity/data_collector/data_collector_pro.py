@@ -263,6 +263,26 @@ exmem = {
         'PCGW_Sbs_clnt':"[\s]+[0-9]+[\s]+[0-9]+[\s]+([0-9]+)[\s]+cpp pcgw sbs client",
 }
 
+cpp_internal = {
+        'timer_wheel_sess_flow_inactv':".*([0-9]+).*Flow inactivity timers\)",
+        'timer_wheel_stats':".*([0-9]+).*Session statistics reporting timers\)",
+        'timer_wheel_stats':".*([0-9]+).*gNB statistics reporting timers\)",
+        'qfi_hash':".*QFI Hash: ([0-9]+).*",
+        'class_id_hash':"Class-id Hash: ([0-9]+).*",
+        'qfi_tree':".*QFI Tree: ([0-9]+).*",
+        'active_gnbs':".* ([0-9]+) \(active gNBs\)",
+        'inactive_gnbs':".*([0-9]+) \(inactive gNBs.*",
+        'inactive_gnbs':".* ([0-9]+) \(active gNBs\)",
+        'total_sess_with_gnb':".* ([0-9]+) \(Total sessions.*",
+        'ue_ip_tree':".*UE-IP Tree:[\s]+([0-9]+).*",
+        'cpp_if_hndl_tree':".*CPP-IF-Handle Tree:[\s]+([0-9]+).*",
+        'ul_pdrs':"UL: Flows ([0-9]+),.*",
+        'ul_packets':"UL: .*, Packets ([0-9]+),.*",
+        'ul_packets_drop':"UL: .* Drops ([0-9]+),.*",
+        'ul_rate':"UL: .* Rate=([0-9]+).*",
+        'ul_pps':"UL: .* pps=([0-9]+)",
+}
+
 t = open_telnet_conn_cli(args.testbed, 10)
 
 cmds=[]
@@ -287,6 +307,9 @@ cmds.append(cli_command(t, gtpu, "GTPU_stats",
 
 cmds.append(cli_command(t, exmem, "CPP_exmem_stats", 
                         "show platform hardware ch ac qfp infrastructure exmem statistics user | i PDU_SESS|pcgw")) 
+
+cmds.append(cli_command(t, cpp_internal, "CPP_internal_stats", 
+                        "show platform hardware chassis active qfp feature packet-core ue session cpp-client internal summary")) 
 
 start_http_server(8000)
 
