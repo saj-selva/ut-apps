@@ -265,14 +265,13 @@ exmem = {
 
 cpp_internal = {
         'timer_wheel_sess_flow_inactv':".*([0-9]+).*Flow inactivity timers\)",
-        'timer_wheel_stats':".*([0-9]+).*Session statistics reporting timers\)",
-        'timer_wheel_stats':".*([0-9]+).*gNB statistics reporting timers\)",
+        'timer_wheel_stats':"[\s]+([0-9]+) [(]Session statistics reporting timers\)",
+        'timer_wheel_gnb':"[\s]+([0-9]+) [(]gNB statistics reporting timers\)",
         'qfi_hash':".*QFI Hash: ([0-9]+).*",
         'class_id_hash':"Class-id Hash: ([0-9]+).*",
         'qfi_tree':".*QFI Tree: ([0-9]+).*",
         'active_gnbs':".* ([0-9]+) \(active gNBs\)",
-        'inactive_gnbs':".*([0-9]+) \(inactive gNBs.*",
-        'inactive_gnbs':".* ([0-9]+) \(active gNBs\)",
+        'inactive_gnbs':".*([0-9]+) \(inactive gNBs,.*",
         'total_sess_with_gnb':".* ([0-9]+) \(Total sessions.*",
         'ue_ip_tree':".*UE-IP Tree:[\s]+([0-9]+).*",
         'cpp_if_hndl_tree':".*CPP-IF-Handle Tree:[\s]+([0-9]+).*",
@@ -281,6 +280,11 @@ cpp_internal = {
         'ul_packets_drop':"UL: .* Drops ([0-9]+),.*",
         'ul_rate':"UL: .* Rate=([0-9]+).*",
         'ul_pps':"UL: .* pps=([0-9]+)",
+        'dl_pdrs':"DL: Flows ([0-9]+),.*",
+        'dl_packets':"DL: .*, Packets ([0-9]+),.*",
+        'dl_packets_drop':"DL: .* Drops ([0-9]+),.*",
+        'dl_rate':"DL: .* Rate=([0-9]+).*",
+        'dl_pps':"DL: .* pps=([0-9]+)",
 }
 
 t = open_telnet_conn_cli(args.testbed, 10)
